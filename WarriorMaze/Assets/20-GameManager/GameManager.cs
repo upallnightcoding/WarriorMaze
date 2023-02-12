@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject mazePathFloorFw;
     [SerializeField] private GameObject buildingFloor01PreFab;
 
+    [SerializeField] private GameObject[] walls;
+
     private Framework framework = null;
 
     // Start is called before the first frame update
@@ -21,41 +23,43 @@ public class GameManager : MonoBehaviour
 
         GameObject wall1 = framework
             .Blueprint(mazeWallFw)
-            .Construct(buildingColumnPreFab, "ColumnAnchor")
-            .Construct(wallSegment01PreFab, "Wall1Anchor")
-            .Construct(wallSegment02PreFab, "Wall2Anchor")
+            .Assemble(buildingColumnPreFab, "ColumnAnchor")
+            .Assemble(walls, "Wall1Anchor")
+            .Assemble(walls, "Wall2Anchor")
             .Build();
 
         GameObject wall2 = framework
             .Blueprint(mazeWallFw)
-            .Construct(buildingColumnPreFab, "ColumnAnchor")
-            .Construct(wallSegment01PreFab, "Wall1Anchor")
-            .Construct(wallSegment02PreFab, "Wall2Anchor")
+            .Assemble(buildingColumnPreFab, "ColumnAnchor")
+            .Assemble(walls, "Wall1Anchor")
+            .Assemble(walls, "Wall2Anchor")
             .Build();
 
         GameObject wall3 = framework
             .Blueprint(mazeWallFw)
-            .Construct(buildingColumnPreFab, "ColumnAnchor")
-            .Construct(wallSegment01PreFab, "Wall1Anchor")
-            .Construct(wallSegment02PreFab, "Wall2Anchor")
+            .Assemble(buildingColumnPreFab, "ColumnAnchor")
+            .Assemble(walls, "Wall1Anchor")
+            .Assemble(walls, "Wall2Anchor")
             .Build(new Vector3(0.0f, 90.0f, 0.0f));
 
         GameObject wall4 = framework
             .Blueprint(mazeWallFw)
-            .Construct(buildingColumnPreFab, "ColumnAnchor")
-            .Construct(wallSegment01PreFab, "Wall1Anchor")
-            .Construct(wallSegment02PreFab, "Wall2Anchor")
+            .Assemble(buildingColumnPreFab, "ColumnAnchor")
+            .Assemble(walls, "Wall1Anchor")
+            .Assemble(walls, "Wall2Anchor")
             .Build(new Vector3(0.0f, 90.0f, 0.0f));
 
         GameObject floor = framework
             .Blueprint(mazePathFloorFw)
-            .Construct(buildingFloor01PreFab, "CenterAnchor")
-            .Construct(wall1, "EastAnchor")
-            .Construct(wall2, "WestAnchor")
-            .Construct(wall3, "NorthAnchor")
-            .Construct(wall4, "SouthAnchor")
-            .Construct(buildingColumnPreFab, "NorthEastAnchor")
-            .Construct(buildingColumnPreFab, "NorthWestAnchor")
+            .Assemble(buildingFloor01PreFab, "CenterAnchor")
+            .Assemble(wall1, "EastAnchor")
+            .Assemble(wall2, "WestAnchor")
+            .Assemble(wall3, "NorthAnchor")
+            .Assemble(wall4, "SouthAnchor")
+            .Assemble(buildingColumnPreFab, "NorthEastAnchor")
+            .Assemble(buildingColumnPreFab, "NorthWestAnchor")
+            .Assemble(buildingColumnPreFab, "SouthEastAnchor")
+            .Assemble(buildingColumnPreFab, "SouthWestAnchor")
             .Build();
     }
 

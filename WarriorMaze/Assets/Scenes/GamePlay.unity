@@ -342,6 +342,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1385772284}
   - component: {fileID: 1385772285}
+  - component: {fileID: 1385772286}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -370,7 +371,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1385772283}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44c3334e24d665a4fa30fec43f17388f, type: 3}
   m_Name: 
@@ -381,3 +382,21 @@ MonoBehaviour:
   wallSegment02PreFab: {fileID: 1118269657684514082, guid: 358a85697e326fb4d94e236e6fee392e, type: 3}
   mazePathFloorFw: {fileID: 7726656697179344338, guid: 16d4b49b18e8a934581758ecd7e2e014, type: 3}
   buildingFloor01PreFab: {fileID: 3110869157700570635, guid: a75e51099da78d64e90153c99ae3fdc7, type: 3}
+  walls:
+  - {fileID: 88102124171022471, guid: fb8add5950b80b04ba056f570c9a99e5, type: 3}
+  - {fileID: 1118269657684514082, guid: 358a85697e326fb4d94e236e6fee392e, type: 3}
+  - {fileID: 2448936603295164100, guid: bf8d03efd0d09d541ad7e1636beabad6, type: 3}
+  - {fileID: 2443144311783666627, guid: 403744b39952d304e84a1100eccd75fa, type: 3}
+--- !u!114 &1385772286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1385772283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f649a9261d7c0142b502c42b52f11e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mazeData: {fileID: 11400000, guid: dc9f93cd1606a3f4c828c348fb18f6ab, type: 2}
