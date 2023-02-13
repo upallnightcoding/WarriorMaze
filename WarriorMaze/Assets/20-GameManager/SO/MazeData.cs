@@ -21,6 +21,19 @@ public class MazeData : ScriptableObject
     [Space]
     public GameObject[] mazeWallsSegmentsPreFab;
 
+    private MazeGenerator maze; 
+
+    public MazeGenerator GetMaze() { return(maze); }
+
+    public MazeGenerator GenerateMaze()
+    {
+        maze = new MazeGenerator(width, height);
+
+        maze.Generate();
+
+        return(maze);
+    }
+
     public GameObject CreateNorthSouthWall(Framework framework)
     {
         GameObject wall = framework
@@ -45,7 +58,7 @@ public class MazeData : ScriptableObject
         return(wall);
     }
 
-    public GameObject CreatePath(
+    public void CreatePath(
         Framework framework, 
         GameObject northWall, GameObject southWall,
         GameObject eastWall, GameObject westWall,
@@ -65,7 +78,5 @@ public class MazeData : ScriptableObject
             .Assemble(buildingColumnPreFab, "SouthWestAnchor")
             .Position(position)
             .Build();
-
-        return(path);
     }
 }

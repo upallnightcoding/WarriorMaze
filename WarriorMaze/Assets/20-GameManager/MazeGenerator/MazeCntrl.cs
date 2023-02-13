@@ -13,12 +13,8 @@ public class MazeCntrl : MonoBehaviour
     {
         framework = new Framework();
 
-        //CreateNorthSouthWall();
-        //CreateEastWestWall();
-
-        MazeGenerator maze = new MazeGenerator(mazeData);
-
-        maze.Generate();
+        Debug.Log("Maze has been created ...");
+        MazeGenerator maze = mazeData.GenerateMaze();
 
         Display(maze);
     }
@@ -47,6 +43,8 @@ public class MazeCntrl : MonoBehaviour
 
         if ((mazeCell != null) && (mazeCell.IsVisited()))
         {
+            mazeCell.Position = position;
+
             GameObject north = (mazeCell.HasNorthWall()) ? mazeData.CreateNorthSouthWall(framework) : null;
             GameObject south = (mazeCell.HasSouthWall()) ? mazeData.CreateNorthSouthWall(framework) : null;
             GameObject east = (mazeCell.HasEastWall()) ? mazeData.CreateEastWestWall(framework) : null;
@@ -55,7 +53,4 @@ public class MazeCntrl : MonoBehaviour
             mazeData.CreatePath(framework, north, south, east, west, position);
         }
     }
-
-    //private GameObject CreateNorthSouthWall()   => mazeData.CreateNorthSouthWall(framework);
-    //private GameObject CreateEastWestWall()     => mazeData.CreateEastWestWall(framework);
 }

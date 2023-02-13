@@ -17,6 +17,8 @@ public class MazeCell
     public int Col              { get; private set; }
     public int Row              { get; private set; }
 
+    public Vector3 Position     { get; set; }
+
     public void MarkAsVisited() => type = MazeCellType.VISITED; 
 
     public bool IsUnVisited()   => (type == MazeCellType.UNVISITED); 

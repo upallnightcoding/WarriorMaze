@@ -8,16 +8,18 @@ public class MazeGenerator
     public int Width { get; private set; }
     public int Height { get; private set; }
 
+    public IDictionary<MazeIndex, MazeCell> GetMaze() { return(maze); }
+
     private bool MazeStackEmpty() => (mazeStack.Count == 0);
 
     private IDictionary<MazeIndex, MazeCell> maze;
     private Stack<MazeCell> mazeStack;
     private List<MazeCell> mazeList;
 
-    public MazeGenerator(MazeData mazeData)
+    public MazeGenerator(int width, int height)
     {
-        this.Width = mazeData.width;
-        this.Height = mazeData.height;
+        this.Width = width;
+        this.Height = height;
 
         mazeStack = new Stack<MazeCell>();
         maze = new Dictionary<MazeIndex, MazeCell>();
@@ -31,6 +33,8 @@ public class MazeGenerator
         {
             WalkMaze(PickAValidNeighbor(mazeStack.Peek()));
         }
+
+        mazeList = new List<MazeCell>(maze.Values);
     }
 
     public MazeCell GetMazeCell(int col, int row)
@@ -42,6 +46,11 @@ public class MazeGenerator
         } 
 
         return(mazeCell);
+    }
+
+    public MazeCell PickRandomCell()
+    {
+        return(mazeList[UnityEngine.Random.Range(0, mazeList.Count)]);
     }
 
     private void WalkMaze(MazeCell neighbor)
