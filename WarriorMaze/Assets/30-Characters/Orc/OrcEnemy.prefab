@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5755326280197296328}
   - component: {fileID: 5755326280197296329}
   - component: {fileID: 5910450228204172877}
+  - component: {fileID: 6843098328909269344}
   m_Layer: 0
   m_Name: OrcEnemy
   m_TagString: Untagged
@@ -68,6 +69,25 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.99, z: 0}
+--- !u!95 &6843098328909269344
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5755326280197296330}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: ecabee70057dbcd4ab57af65ba998259, type: 3}
+  m_Controller: {fileID: 9100000, guid: efce91b039110d54792975e701f9d7f9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &5755326281049432392
 PrefabInstance:
   m_ObjectHideFlags: 0
