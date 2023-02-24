@@ -26,7 +26,6 @@ public class OrcCntrl : MonoBehaviour
     {
         maze = mazeData.GetMaze();
 
-        Debug.Log("Orc requires the maze ...");
         previousCell = null;
         currentCell = maze.PickRandomCell();
         targetCell = PickFreeNeighbor(currentCell, previousCell);

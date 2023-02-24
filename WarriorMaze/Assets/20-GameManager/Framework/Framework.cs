@@ -21,9 +21,9 @@ public class Framework
         return(Assemble(additionList[selection], anchorName));
     }
 
-    public Framework Assemble(GameObject addition, string anchorName)
+    public Framework Assemble(GameObject addition, string anchorName, bool create = true)
     {
-        if (addition != null)
+        if ((addition != null) && (create))
         {
             Transform anchors = model.transform.Find("Anchors");
             Transform anchor = anchors.Find(anchorName);
@@ -38,6 +38,13 @@ public class Framework
                 addition.transform.parent = anchor;
             }
         }
+
+        return(this);
+    }
+
+    public Framework Parent(Transform transform)
+    {
+        model.transform.parent = transform;
 
         return(this);
     }

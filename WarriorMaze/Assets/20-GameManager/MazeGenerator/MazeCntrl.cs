@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,16 @@ using UnityEngine;
 public class MazeCntrl : MonoBehaviour
 {
     [SerializeField] private MazeData mazeData;
+
+    private readonly uint NW = MazeData.NW;
+    private readonly uint SW = MazeData.SW;
+    private readonly uint SE = MazeData.SE;
+    private readonly uint NE = MazeData.NE;
+
+    private readonly uint N = MazeData.N;
+    private readonly uint S = MazeData.S;
+    private readonly uint E = MazeData.E;
+    private readonly uint W = MazeData.W;
 
     private Framework framework = null;
 
@@ -43,14 +54,39 @@ public class MazeCntrl : MonoBehaviour
 
         if ((mazeCell != null) && (mazeCell.IsVisited()))
         {
-            mazeCell.Position = position;
+            Tuple<uint, uint> colsAndwalls = ColumnsAndWalls(col, row);
+            uint columns = colsAndwalls.Item1;
+            uint walls = colsAndwalls.Item2;
 
-            GameObject north = (mazeCell.HasNorthWall()) ? mazeData.CreateNorthSouthWall(framework) : null;
-            GameObject south = (mazeCell.HasSouthWall()) ? mazeData.CreateNorthSouthWall(framework) : null;
-            GameObject east = (mazeCell.HasEastWall()) ? mazeData.CreateEastWestWall(framework) : null;
-            GameObject west = (mazeCell.HasWestWall()) ? mazeData.CreateEastWestWall(framework) : null;
-
-            mazeData.CreatePath(framework, north, south, east, west, position);
+            mazeData.CreatePath(framework, mazeCell, position, columns, walls);
         }
+    }
+
+    private Tuple<uint, uint> ColumnsAndWalls(int col, int row) 
+    {
+        uint walls = 0, columns = 0;
+
+        if (row == 0) 
+        {
+            if (col == 0) 
+            {
+                columns = NW+NE+SW+SE;
+                walls = N+S+E+W;
+            } else {
+                columns = NE+SE;
+                walls = N+S+E;
+            }
+        } else {
+            if (col == 0)
+            {
+                columns = NW+NE;
+                walls = N+E+W;
+            } else {
+                columns = NE;
+                walls = N+E;
+            }
+        }
+
+        return(new Tuple<uint, uint>(columns, walls));
     }
 }
