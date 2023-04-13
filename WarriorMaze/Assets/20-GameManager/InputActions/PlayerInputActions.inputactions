@@ -7,7 +7,7 @@
             "actions": [
                 {
                     "name": "Movement",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "80b3d49a-4762-4e32-b54d-54e4d4daaed6",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -18,6 +18,14 @@
                     "type": "Button",
                     "id": "25adf1f6-5e86-46cb-94c8-21b633c191b1",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MouseLook",
+                    "type": "Value",
+                    "id": "1ad8f591-9c16-446e-9f03-fef5b1463d87",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
                 }
@@ -97,6 +105,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "20849599-2bc5-44d6-a344-ccfeb64d24c2",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseLook",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
