@@ -23,12 +23,10 @@ public class WaveCollapse : MonoBehaviour
         tileMngr = new WcTileManager(width, height, models, error, blank);
 
         algor = new WcAlgorithm(tileMngr);
-
-        //StartWaveFunctionsCollapse();
     }
 
     public void StartWaveFunctionsCollapse()
     {
-        algor.RunAlgorithm(30);
+        algor.RunAlgorithm(100);
     }
 }

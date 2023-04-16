@@ -144,11 +144,11 @@ PrefabInstance:
       objectReference: {fileID: 4731620655780251618, guid: 9b6ab7b8e1bc3e246bbd9630dddc06fa, type: 3}
     - target: {fileID: 7406662731940409609, guid: 4b2f7d64e88eb5246860b257839efd71, type: 3}
       propertyPath: width
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7406662731940409609, guid: 4b2f7d64e88eb5246860b257839efd71, type: 3}
       propertyPath: height
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7406662731940409609, guid: 4b2f7d64e88eb5246860b257839efd71, type: 3}
       propertyPath: models.Array.size

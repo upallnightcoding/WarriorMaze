@@ -30,4 +30,11 @@ public class WcTileManager
         this.error = error;
         this.blank = blank;
     }
+
+    public List<int> GetRules(WcWaveCell cell, WcDirection direction)
+    {
+        int id = cell.GetCollapsedTile();
+        WcTileModel model = GetTile(id);
+        return(model.GetRules(direction));
+    }
 }

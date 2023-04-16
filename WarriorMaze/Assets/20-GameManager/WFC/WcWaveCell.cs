@@ -12,7 +12,7 @@ public class WcWaveCell
     private Vector3 position;
 
     public int GetEntropy() => availableTiles.Count;
-    public List<int> GetAvailableTiles() => availableTiles;
+    //public List<int> GetAvailableTiles() => availableTiles;
     public int GetCollapsedTile() => availableTiles[0];
     
     public bool IsCollapsed() => GetEntropy() == 1;
@@ -22,6 +22,7 @@ public class WcWaveCell
     public bool IsInError() => (availableTiles.Count == 0);
 
     public bool IsValidEntropy() => GetEntropy() > 0;
+    
     private bool IsLessThan(int value) => (GetEntropy() < value);
 
     public WcWaveCell(int x, int y, List<int> availableTiles)
@@ -32,11 +33,9 @@ public class WcWaveCell
         this.Y = y;
     }
 
-    public void SetAvailableTiles(List<int> rules)
+    public void apply(List<int> rules)
     {
         availableTiles = new List<int>(availableTiles).Intersect(rules).ToList<int>();
-
-        Debug.Log($"(SetAvailableTiles: {X} {Y}) {IsCollapsed()} {availableTiles.Count}");
     }
 
     public void Collapse()
@@ -45,6 +44,5 @@ public class WcWaveCell
 
         availableTiles.Clear();
         availableTiles.Add(index);
-        Debug.Log($"(Collapse: {X} {Y}) {IsCollapsed()} {IsCollapsed()} {availableTiles.Count}");
     }
 }

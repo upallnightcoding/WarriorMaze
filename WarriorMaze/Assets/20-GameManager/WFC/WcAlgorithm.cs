@@ -10,6 +10,7 @@ public class WcAlgorithm
     private int height;
 
     private IDictionary<WcTileIndex, WcWaveCell> wave;
+    private List<GameObject> deleteList;
 
     private Tuple<int, int, WcDirection>[] neighbors = {
         Tuple.Create( 0,  1, WcDirection.NORTH),    // North
@@ -18,24 +19,32 @@ public class WcAlgorithm
         Tuple.Create(-1,  0, WcDirection.WEST)      // West
     };
 
+    private int Random(int n) => UnityEngine.Random.Range(0, n);
+
     public WcAlgorithm(WcTileManager tileMngr) 
     {
         this.tileMngr = tileMngr;
         this.width = tileMngr.Width;
         this.height = tileMngr.Height;
+
+        this.deleteList = new List<GameObject>();
     }
 
     public void RunAlgorithm(int iteration)
     {
+        bool stopIteration = false;
+
         InitializeWFC();
 
-        for (int i = 0; i < iteration; i++) {
+        for (int i = 0; (i < iteration) && !stopIteration; i++) {
             WcWaveCell cell = FindLowestEntropyCell();
 
-            cell.Collapse();
+            stopIteration = (cell == null);
 
-            PropagateEntropy(cell);
-            //PropagateEntropy();
+            if (!stopIteration) {
+                cell.Collapse();
+                PropagateEntropy(cell);
+            }
         }
 
         RenderWave();
@@ -61,14 +70,24 @@ public class WcAlgorithm
                     preFab = tileMngr.GetBlank();
                 }
 
-                UnityEngine.Object.Instantiate(preFab, position, Quaternion.identity);
+                RenderModel(preFab, position);
             }
         }
+    }
+
+    private void RenderModel(GameObject preFab, Vector3 position)
+    {
+        GameObject go = 
+            UnityEngine.Object.Instantiate(preFab, position, Quaternion.identity);
+
+        deleteList.Add(go);
     }
 
     private void InitializeWFC() 
     {
         wave = new Dictionary<WcTileIndex, WcWaveCell>();
+
+        deleteList.ForEach((go) => UnityEngine.Object.Destroy(go));
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -86,8 +105,6 @@ public class WcAlgorithm
 
         stack.Push(startingPoint);
 
-        Debug.Log($"(Starting Point: {startingPoint.X} {startingPoint.Y}) {startingPoint.GetCollapsedTile()}");
-
         while ((stack.Count != 0) && (count++ < 500)) {
             WcWaveCell pivot = stack.Pop();
 
@@ -98,41 +115,23 @@ public class WcAlgorithm
                 }
             }
         }
-
-        Debug.Log($"Count: {count}");
-    }
-
-    private void PropagateEntropy1(WcWaveCell cell)
-    {
-        foreach (Tuple<int, int, WcDirection> neighbor in neighbors) {
-            CellLookUp(cell, neighbor);
-        }
     }
 
     private WcWaveCell CellLookUp(WcWaveCell pivot, Tuple<int, int, WcDirection> neighbor) {
         int x = pivot.X + neighbor.Item1;
         int y = pivot.Y + neighbor.Item2;
-        WcDirection direction = neighbor.Item3;
-
         WcWaveCell target = GetWaveCell(x, y);
 
         if ((target != null) && (!target.IsInError()) && (!target.IsCollapsed())) {
-            List<int> offsetAvailTiles = target.GetAvailableTiles();
+            WcDirection direction = neighbor.Item3;
+            List<int> rules = tileMngr.GetRules(pivot, direction);
 
-            int id = pivot.GetCollapsedTile();
-            WcTileModel model = tileMngr.GetTile(id);
-            List<int> rules = model.GetRules(direction);
-
-            target.SetAvailableTiles(rules);
+            target.apply(rules);
         } else {
             target = null;
         }
 
         return(target);
-    }
-
-    private void Collapse(WcWaveCell cell) {
-        cell.Collapse();
     }
 
     private WcWaveCell FindLowestEntropyCell() {
@@ -142,24 +141,21 @@ public class WcAlgorithm
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 WcWaveCell cell = GetWaveCell(x, y);
-                Debug.Log($"({cell.X} {cell.Y}) {cell.IsCollapsed()} {cell.GetEntropy()}");
 
                 if (!cell.IsCollapsed()) {
                     if (cell.IsLessThanValidCell(lowestEntropy)) {
                         lowestEntropy = cell.GetEntropy();
                         minCellList.Clear();
                         minCellList.Add(cell);
-                        Debug.Log($"({cell.X} {cell.Y}) Lowest: {lowestEntropy}");
                     } else if (cell.IsEqualTo(lowestEntropy)) {
                         minCellList.Add(cell);
-                        Debug.Log($"({cell.X} {cell.Y}) Add: {lowestEntropy}");
                     }
                 }
             }
         }
 
-        WcWaveCell minimal = minCellList[UnityEngine.Random.Range(0, minCellList.Count)];
-        Debug.Log($"Minimal: ({minimal.X} {minimal.Y})");
+        WcWaveCell minimal = 
+            (minCellList.Count != 0) ? minCellList[Random(minCellList.Count)] : null;
 
         return(minimal);
     }
