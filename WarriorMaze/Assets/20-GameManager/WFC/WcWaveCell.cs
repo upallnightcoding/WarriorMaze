@@ -19,8 +19,10 @@ public class WcWaveCell
     public bool IsLessThanValidCell(int value) => (IsLessThan(value) && IsValidEntropy());
     public bool IsEqualTo(int value) => (value == GetEntropy());
 
-    private bool IsValidEntropy() => GetEntropy() > 0;
-    private bool IsLessThan(int value) => (value < GetEntropy());
+    public bool IsInError() => (availableTiles.Count == 0);
+
+    public bool IsValidEntropy() => GetEntropy() > 0;
+    private bool IsLessThan(int value) => (GetEntropy() < value);
 
     public WcWaveCell(int x, int y, List<int> availableTiles)
     {
@@ -30,9 +32,11 @@ public class WcWaveCell
         this.Y = y;
     }
 
-    public void SetAvailableTiles(List<int> tiles)
+    public void SetAvailableTiles(List<int> rules)
     {
-        availableTiles = new List<int>(availableTiles).Intersect(tiles).ToList<int>();
+        availableTiles = new List<int>(availableTiles).Intersect(rules).ToList<int>();
+
+        Debug.Log($"(SetAvailableTiles: {X} {Y}) {IsCollapsed()} {availableTiles.Count}");
     }
 
     public void Collapse()
@@ -41,5 +45,6 @@ public class WcWaveCell
 
         availableTiles.Clear();
         availableTiles.Add(index);
+        Debug.Log($"(Collapse: {X} {Y}) {IsCollapsed()} {IsCollapsed()} {availableTiles.Count}");
     }
 }

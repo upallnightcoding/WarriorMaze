@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class WaveCollapse : MonoBehaviour
 {
+    [SerializeField] private int width;
+    [SerializeField] private int height;
+
     [SerializeField] private WcTileModel[] models;
+
+    [SerializeField] private GameObject error;
+
+    [SerializeField] private GameObject blank;
 
     private WcTileManager tileMngr;
 
@@ -13,15 +20,15 @@ public class WaveCollapse : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        tileMngr = new WcTileManager(models);
+        tileMngr = new WcTileManager(width, height, models, error, blank);
 
-        algor = new WcAlgorithm(tileMngr, 2, 2);
+        algor = new WcAlgorithm(tileMngr);
 
-        StartWaveFunctionsCollapse();
+        //StartWaveFunctionsCollapse();
     }
 
-    private void StartWaveFunctionsCollapse()
+    public void StartWaveFunctionsCollapse()
     {
-        algor.RunAlgorithm();
+        algor.RunAlgorithm(30);
     }
 }

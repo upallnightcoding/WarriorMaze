@@ -14,6 +14,8 @@ public class WcTileModel : ScriptableObject
 
     public int GetId() => id;
 
+    public GameObject GetPreFab() => preFab;
+
     public List<int> GetRules(WcDirection direction)
     {
         List<int> tiles = null;

@@ -12,28 +12,58 @@ public class WcAlgorithm
     private IDictionary<WcTileIndex, WcWaveCell> wave;
 
     private Tuple<int, int, WcDirection>[] neighbors = {
-        Tuple.Create( 0, -1, WcDirection.NORTH),    // North
-        Tuple.Create( 0,  1, WcDirection.SOUTH),    // South
+        Tuple.Create( 0,  1, WcDirection.NORTH),    // North
+        Tuple.Create( 0, -1, WcDirection.SOUTH),    // South
         Tuple.Create( 1,  0, WcDirection.EAST),     // East
         Tuple.Create(-1,  0, WcDirection.WEST)      // West
     };
 
-    public WcAlgorithm(WcTileManager tileMngr, int width, int height) 
+    public WcAlgorithm(WcTileManager tileMngr) 
     {
         this.tileMngr = tileMngr;
-        this.width = width;
-        this.height = height;
+        this.width = tileMngr.Width;
+        this.height = tileMngr.Height;
     }
 
-    public void RunAlgorithm()
+    public void RunAlgorithm(int iteration)
     {
         InitializeWFC();
 
-        WcWaveCell cell = FindLowestEntropyCell();
+        for (int i = 0; i < iteration; i++) {
+            WcWaveCell cell = FindLowestEntropyCell();
 
-        cell.Collapse();
+            cell.Collapse();
 
-        PropagateEntropy(cell);
+            PropagateEntropy(cell);
+            //PropagateEntropy();
+        }
+
+        RenderWave();
+    }
+
+    private void RenderWave()
+    {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                WcWaveCell cell = GetWaveCell(x, y);
+
+                Vector3 position = new Vector3(x, 0.0f, y);
+
+                GameObject preFab;
+
+                if (cell.IsCollapsed()) {
+                    int index = cell.GetCollapsedTile();
+                    WcTileModel model = tileMngr.GetTile(index);
+                    preFab = model.GetPreFab();
+                } else if (cell.IsInError()) {
+                    preFab = tileMngr.GetError();
+                } else {
+                    preFab = tileMngr.GetBlank();
+                }
+
+                UnityEngine.Object.Instantiate(preFab, position, Quaternion.identity);
+            }
+        }
     }
 
     private void InitializeWFC() 
@@ -49,49 +79,56 @@ public class WcAlgorithm
         }
     }                  
 
-    private void PropagateEntropy(WcWaveCell cell)
+    private void PropagateEntropy(WcWaveCell startingPoint)
+    {
+        Stack<WcWaveCell> stack = new Stack<WcWaveCell>();
+        int count = 0;
+
+        stack.Push(startingPoint);
+
+        Debug.Log($"(Starting Point: {startingPoint.X} {startingPoint.Y}) {startingPoint.GetCollapsedTile()}");
+
+        while ((stack.Count != 0) && (count++ < 500)) {
+            WcWaveCell pivot = stack.Pop();
+
+            foreach (Tuple<int, int, WcDirection> neighbor in neighbors) {
+                WcWaveCell target = CellLookUp(pivot, neighbor);
+                if ((target != null) && (target.IsCollapsed())) {
+                    stack.Push(target);
+                }
+            }
+        }
+
+        Debug.Log($"Count: {count}");
+    }
+
+    private void PropagateEntropy1(WcWaveCell cell)
     {
         foreach (Tuple<int, int, WcDirection> neighbor in neighbors) {
             CellLookUp(cell, neighbor);
         }
     }
 
-    private bool PropagateEntropy()
-    {
-        int countNotCollapsed = 0;
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-               WcWaveCell cell = GetWaveCell(x, y);
-
-               if (!cell.IsCollapsed()) {
-                    foreach (Tuple<int, int, WcDirection> neighbor in neighbors) {
-                        CellLookUp(cell, neighbor);
-                    }
-                    countNotCollapsed++;
-               } 
-            }
-        }
-
-        return(countNotCollapsed > 0);
-    }
-
-    private void CellLookUp(WcWaveCell cell, Tuple<int, int, WcDirection> neighbor) {
-        int x = cell.X + neighbor.Item1;
-        int y = cell.Y + neighbor.Item2;
+    private WcWaveCell CellLookUp(WcWaveCell pivot, Tuple<int, int, WcDirection> neighbor) {
+        int x = pivot.X + neighbor.Item1;
+        int y = pivot.Y + neighbor.Item2;
         WcDirection direction = neighbor.Item3;
 
-        WcWaveCell offsetCell = GetWaveCell(x, y);
+        WcWaveCell target = GetWaveCell(x, y);
 
-        if (offsetCell != null) {
-            List<int> offsetAvailTiles = offsetCell.GetAvailableTiles();
+        if ((target != null) && (!target.IsInError()) && (!target.IsCollapsed())) {
+            List<int> offsetAvailTiles = target.GetAvailableTiles();
 
-            int id = cell.GetCollapsedTile();
+            int id = pivot.GetCollapsedTile();
             WcTileModel model = tileMngr.GetTile(id);
             List<int> rules = model.GetRules(direction);
 
-            offsetCell.SetAvailableTiles(rules);
+            target.SetAvailableTiles(rules);
+        } else {
+            target = null;
         }
+
+        return(target);
     }
 
     private void Collapse(WcWaveCell cell) {
@@ -105,18 +142,26 @@ public class WcAlgorithm
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 WcWaveCell cell = GetWaveCell(x, y);
+                Debug.Log($"({cell.X} {cell.Y}) {cell.IsCollapsed()} {cell.GetEntropy()}");
 
-                if (cell.IsEqualTo(lowestEntropy)) {
-                    minCellList.Add(cell);
-                } else if (cell.IsLessThanValidCell(lowestEntropy)) {
-                    lowestEntropy = cell.GetEntropy();
-                    minCellList.Clear();
-                    minCellList.Add(cell);
+                if (!cell.IsCollapsed()) {
+                    if (cell.IsLessThanValidCell(lowestEntropy)) {
+                        lowestEntropy = cell.GetEntropy();
+                        minCellList.Clear();
+                        minCellList.Add(cell);
+                        Debug.Log($"({cell.X} {cell.Y}) Lowest: {lowestEntropy}");
+                    } else if (cell.IsEqualTo(lowestEntropy)) {
+                        minCellList.Add(cell);
+                        Debug.Log($"({cell.X} {cell.Y}) Add: {lowestEntropy}");
+                    }
                 }
             }
         }
 
-        return(minCellList[UnityEngine.Random.Range(0, minCellList.Count)]);
+        WcWaveCell minimal = minCellList[UnityEngine.Random.Range(0, minCellList.Count)];
+        Debug.Log($"Minimal: ({minimal.X} {minimal.Y})");
+
+        return(minimal);
     }
 
     private WcWaveCell GetWaveCell(int x, int y) {

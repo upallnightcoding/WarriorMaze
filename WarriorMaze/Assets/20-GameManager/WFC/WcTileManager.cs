@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class WcTileManager 
 {
@@ -9,10 +10,24 @@ public class WcTileManager
 
     public WcTileModel GetTile(int id) => models.First(tile => (tile.GetId() == id));
 
+    public GameObject GetError() => error;
+
+    public GameObject GetBlank() => blank;
+
+    public int Width { get; set;}
+    public int Height { get; set; }
+
     private WcTileModel[] models;
 
-    public WcTileManager(WcTileModel[] models)
+    private GameObject error;
+    private GameObject blank;
+
+    public WcTileManager(int width, int height, WcTileModel[] models, GameObject error, GameObject blank)
     {
+        this.Width = width;
+        this.Height = height;
         this.models = models;
+        this.error = error;
+        this.blank = blank;
     }
 }
