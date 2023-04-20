@@ -52,11 +52,12 @@ public class WcAlgorithm
 
     private void RenderWave()
     {
+        float step = 6.0f;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 WcWaveCell cell = GetWaveCell(x, y);
 
-                Vector3 position = new Vector3(x, 0.0f, y);
+                Vector3 position = new Vector3(x * step, 0.0f, y * step);
 
                 GameObject preFab;
 
